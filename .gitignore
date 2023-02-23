@@ -11,3 +11,4 @@ pyvenv.cfg
 db.sqlite3
 static
 media
+templates
