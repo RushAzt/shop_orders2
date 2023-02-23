@@ -10,6 +10,7 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment {self.account_number}"
+
 class Address(models.Model):
     """
         Модель адреса пользователя
@@ -30,19 +31,6 @@ class Address(models.Model):
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
 
-class Address(models.Model):
-    customer = models.ForeignKey(User, verbose_name='Покупатель', on_delete=models.CASCADE)
-    city = models.CharField('Город', max_length=32)
-    street_name = models.CharField('Название улицы', max_length=64)
-    house = models.CharField('Дом', max_length=64)
-    postal_code = models.CharField(max_length=20, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
-
-class Payment(models.Model):
-    card_number = models.CharField(max_length=16, verbose_name="Номер карты")
-    date = models.DateField()
-    cvc = models.CharField(max_length=3)
 
 
 CHOICES = (
@@ -58,8 +46,6 @@ class Order(models.Model):
     last_name = models.CharField(max_length=100, verbose_name='Фамиля')
     phone_number = models.CharField(max_length=20, verbose_name='Номер телефона')
     address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="order_address", verbose_name='Адрес')
-    phone_number = models.CharField(max_length=250, verbose_name='Номер телефона')
-    address = models.ForeignKey(Address, related_name='order_address', on_delete=models.CASCADE, verbose_name='Адрес')
     status = models.CharField(max_length=100, choices=CHOICES, default='New', verbose_name="Статус")
     sum = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,7 +67,6 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='order_info', on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1, null=True, blank=True)
     # price = models.DecimalField(max_digits=10, decimal_places=2)
