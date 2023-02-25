@@ -1,27 +1,42 @@
+from datetime import datetime
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from orders.models import Order, OrderItem, Payment, Address
+from orders.models import Order, OrderItem, Payment
 
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = "customer city street_name house contact_phone postal_code".split()
+
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = "id card_number date cvc".split()
+        fields = "id card_number date cvc_code".split()
+
+
+
 
 class OrderSerializers(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = "id first_name last_name phone_number status sum address".split()
+        fields = "id user first_name last_name phone_number city street_name street_type zip_code house status".split()
 
+        def create(self, validate_data):
+            return Order.objects.create(**validate_data)
 
 class OrderItemSerializer(serializers.ModelSerializer):
     order = OrderSerializers()
     cost = serializers.SerializerMethodField()
     class Meta:
         model = OrderItem
-        fields = "id order product quantity get_cost".split()
+        fields = "id order product quantity cost".split()
+
+    def get_cost(self, cost):
+        return cost.get_cost()
+
+
+
+
+
+
+
 
